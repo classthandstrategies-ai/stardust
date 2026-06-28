@@ -42,3 +42,4 @@ Desktop.ini
 .cache/
 coverage/
 *.tsbuildinfo
+.vercel

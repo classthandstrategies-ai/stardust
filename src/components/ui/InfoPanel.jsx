@@ -32,7 +32,8 @@ export default function InfoPanel({ place, dateLabel, timeLabel, summary, approx
       </div>
       {approximate && (
         <div className="text-smoke" style={{ fontSize: 11, marginTop: 10, fontStyle: 'italic' }}>
-          No exact time given — sky set to noon, so orientation is approximate.
+          No exact time given — shown as a typical evening (10pm), so the sky’s orientation is
+          approximate.
         </div>
       )}
     </div>

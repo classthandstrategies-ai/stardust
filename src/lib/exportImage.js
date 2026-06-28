@@ -30,6 +30,14 @@ export function saveSkyImage(glCanvas, { place, when, fact }, filename = 'stardu
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(glCanvas, 0, 0, w, h);
 
+  // A soft bottom scrim for caption legibility — a gentle gradient into the void
+  // rather than a per-glyph drop shadow (DESIGN.md: no shadows).
+  const scrim = ctx.createLinearGradient(0, h * 0.55, 0, h);
+  scrim.addColorStop(0, 'rgba(0,0,0,0)');
+  scrim.addColorStop(1, 'rgba(0,0,0,0.6)');
+  ctx.fillStyle = scrim;
+  ctx.fillRect(0, h * 0.55, w, h * 0.45);
+
   // Scale the caption with the export resolution so it reads on any size.
   const s = w / 1280;
   const pad = Math.round(48 * s);
@@ -39,8 +47,6 @@ export function saveSkyImage(glCanvas, { place, when, fact }, filename = 'stardu
   const font = (size, weight) => `${weight} ${Math.round(size * s)}px Inter, system-ui, sans-serif`;
 
   ctx.textBaseline = 'alphabetic';
-  ctx.shadowColor = 'rgba(0,0,0,0.6)';
-  ctx.shadowBlur = Math.round(8 * s);
 
   // Fact (lowest line).
   ctx.font = font(15, 400);
@@ -65,8 +71,7 @@ export function saveSkyImage(glCanvas, { place, when, fact }, filename = 'stardu
   ctx.fillText(place, x, y);
   y -= Math.round(40 * s);
 
-  // Hairline + wordmark.
-  ctx.shadowBlur = 0;
+  // Wordmark.
   ctx.font = font(11, 600);
   ctx.fillStyle = 'rgba(128,82,255,0.95)'; // plum-voltage
   ctx.fillText('✦ STARDUST', x, y);

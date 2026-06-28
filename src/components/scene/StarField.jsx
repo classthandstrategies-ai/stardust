@@ -33,8 +33,13 @@ const vertexShader = /* glsl */ `
     float size = (1.0 + bright * 0.95) * uSizeScale * uPixelRatio * twinkle;
     gl_PointSize = size * (300.0 / -mv.z);
 
+    // Fade stars out at and below the horizon (position.y = radius·sin(alt)) so
+    // below-horizon stars never bleed through the ground when you orbit down.
+    // The taper just above the horizon also reads as real atmospheric extinction.
+    float horizonFade = smoothstep(-1.0, 5.0, position.y);
+
     vColor = aColor;
-    vBright = clamp(bright / 8.5, 0.12, 1.0) * twinkle;
+    vBright = clamp(bright / 8.5, 0.12, 1.0) * twinkle * horizonFade;
   }
 `;
 

@@ -1,6 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import SkyScene from './components/scene/SkyScene.jsx';
+// The 3D scene pulls in Three.js and the R3F stack — by far the heaviest part of
+// the bundle. Lazy-load it so the landing hero + form paint immediately while
+// WebGL streams in behind the scrim.
+const SkyScene = lazy(() => import('./components/scene/SkyScene.jsx'));
 import InputForm from './components/ui/InputForm.jsx';
 import InfoPanel from './components/ui/InfoPanel.jsx';
 import SkyActions from './components/ui/SkyActions.jsx';
@@ -114,8 +117,10 @@ export default function App() {
   return (
     <div className="relative h-full w-full overflow-hidden bg-void">
       {/* The sky is always present, full-bleed. It is the demo sky until the
-          viewer reveals their own. */}
-      <SkyScene sky={sky} reducedMotion={reducedMotion} onReady={(el) => (glRef.current = el)} />
+          viewer reveals their own. Lazy — falls back to the void until loaded. */}
+      <Suspense fallback={null}>
+        <SkyScene sky={sky} reducedMotion={reducedMotion} onReady={(el) => (glRef.current = el)} />
+      </Suspense>
 
       {/* Landing / edit overlay */}
       {showForm && (

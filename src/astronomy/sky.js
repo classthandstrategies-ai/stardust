@@ -70,10 +70,34 @@ export function altAzToVector(altDeg, azDeg, radius = SKY_RADIUS) {
 // Stars
 // ---------------------------------------------------------------------------
 
+/** Only the very brightest named stars get an interactive label (keeps the
+ *  field uncluttered and the hit-targets meaningful). */
+const NAMED_STAR_MAG_LIMIT = 2.0;
+
+/** A plain-English colour word for a B−V colour index. */
+function bvColorWord(ci) {
+  if (ci < 0.0) return 'blue-white';
+  if (ci < 0.3) return 'white';
+  if (ci < 0.6) return 'yellow-white';
+  if (ci < 1.0) return 'golden';
+  if (ci < 1.5) return 'orange';
+  return 'red';
+}
+
+/** A short, true one-line description of a star from its magnitude and colour. */
+function starBlurb(mag, ci) {
+  const colour = bvColorWord(ci);
+  if (mag < 0.5) return `A brilliant ${colour} star — among the brightest in the whole sky.`;
+  if (mag < 1.5) return `A bright ${colour} star, magnitude ${mag.toFixed(1)}.`;
+  return `A ${colour} star, magnitude ${mag.toFixed(1)}.`;
+}
+
 /**
  * Project the whole star catalogue into scene space for the given sky.
  * Returns a flat Float32Array of XYZ plus parallel arrays of magnitude and
- * colour index, which is the shape the GPU point cloud wants.
+ * colour index, which is the shape the GPU point cloud wants. Also returns
+ * `named`: the brightest named stars that were above the horizon, with their
+ * scene positions, so the UI can offer hover/click labels like the planets.
  */
 export function computeStarField(starRecords, latitude, longitude, date) {
   const lst = localSiderealHours(date, longitude);
@@ -81,10 +105,11 @@ export function computeStarField(starRecords, latitude, longitude, date) {
   const positions = new Float32Array(n * 3);
   const magnitudes = new Float32Array(n);
   const colorIndices = new Float32Array(n);
+  const named = [];
   let aboveHorizon = 0;
 
   for (let i = 0; i < n; i++) {
-    const [ra, dec, mag, ci] = starRecords[i];
+    const [ra, dec, mag, ci, name] = starRecords[i];
     const { altitude, azimuth } = equatorialToHorizontal(ra, dec, latitude, lst);
     const [x, y, z] = altAzToVector(altitude, azimuth);
     positions[i * 3] = x;
@@ -92,10 +117,15 @@ export function computeStarField(starRecords, latitude, longitude, date) {
     positions[i * 3 + 2] = z;
     magnitudes[i] = mag;
     colorIndices[i] = ci;
-    if (altitude > 0) aboveHorizon++;
+    if (altitude > 0) {
+      aboveHorizon++;
+      if (name && mag <= NAMED_STAR_MAG_LIMIT) {
+        named.push({ name, mag, position: [x, y, z], fact: starBlurb(mag, ci) });
+      }
+    }
   }
 
-  return { positions, magnitudes, colorIndices, count: n, aboveHorizon, lst };
+  return { positions, magnitudes, colorIndices, count: n, aboveHorizon, named, lst };
 }
 
 /**
@@ -290,7 +320,8 @@ export function summarizeSky({ moon, planets, sun }) {
 
   let sentence = parts.join(', and ') + '.';
   if (sun.isDay) {
-    sentence += ' (The Sun was up — these stars were there, just hidden by daylight.)';
+    sentence +=
+      ' (The Sun was above the horizon — these same stars wheeled overhead, washed out by daylight.)';
   }
   return sentence;
 }

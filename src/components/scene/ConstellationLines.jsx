@@ -15,7 +15,9 @@ export default function ConstellationLines({ lines }) {
 
   return (
     <lineSegments geometry={geometry} frustumCulled={false}>
-      <lineBasicMaterial color="#aeb8e8" transparent opacity={0.14} depthWrite={false} />
+      {/* Bone (white) at very low alpha — violet is reserved for the action
+          colour and is kept out of the starfield (see DESIGN.md). */}
+      <lineBasicMaterial color="#ffffff" transparent opacity={0.12} depthWrite={false} />
     </lineSegments>
   );
 }

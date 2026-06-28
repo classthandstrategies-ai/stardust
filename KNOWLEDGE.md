@@ -54,8 +54,9 @@ time)` for the illuminated fraction and phase angle, and `MoonPhase(time)`
    ```
 
    Points are placed on a sphere of fixed radius around the camera at the
-   origin. Stars with `alt < 0` are below the horizon plane (`y < 0`) and fade
-   into the ground haze.
+   origin. Stars with `alt < 0` are below the horizon plane (`y < 0`); the star
+   shader fades them out across the horizon so they don't show through the ground
+   when the camera orbits downward.
 
 ## Star catalogue
 
@@ -95,11 +96,28 @@ time)` for the illuminated fraction and phase angle, and `MoonPhase(time)`
 
 ## Timezone & "approximate" handling
 
-- If birth time is unknown, it defaults to **12:00 noon local**, and the UI
+- If birth time is unknown, it defaults to **22:00 (10pm) local**, and the UI
   states that without an exact time the sky (especially Moon and fast bodies) is
-  approximate. The dominant effect of an unknown time is the rotation of the
-  whole sky (LST changes 15°/hour), so the _set_ of visible constellations is
-  roughly right but their orientation/horizon membership can shift.
+  approximate. The default was deliberately chosen as a representative _night_
+  rather than noon: this is a night-sky keepsake, so an unknown-time sky should
+  land on a real star-filled evening, not an empty daytime sky. The dominant
+  effect of an unknown time is the rotation of the whole sky (LST changes
+  15°/hour), so the _set_ of visible constellations is roughly right but their
+  orientation/horizon membership can shift.
+- If the user _does_ enter a daytime birth time, the summary honestly notes the
+  Sun was up and the stars were washed out by daylight — they are still rendered.
+
+## Refraction & aberration: stars vs. bodies
+
+- Stars use the hand-rolled J2000 equatorial→horizontal transform with **no**
+  atmospheric refraction or aberration applied. The Sun, Moon, and planets use
+  `astronomy-engine` of-date **with** refraction (`'normal'`) and aberration.
+- Consequence: near the horizon a body sits up to ~0.5° higher than an adjacent
+  star would, because refraction lifts objects most at low altitude. This is a
+  sub-degree, visual-only discrepancy between the two populations and is
+  acceptable for a keepsake — but it is a real inconsistency, noted here so it
+  isn't mistaken for a bug. (Stars are additionally faded out at the horizon in
+  the shader, which softens where the mismatch would be most visible.)
 
 ## Accuracy targets
 

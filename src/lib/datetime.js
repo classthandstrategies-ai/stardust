@@ -33,8 +33,10 @@ export function formatOffset(offsetHours) {
  *
  * @param {Object} opts
  * @param {string} opts.date        `YYYY-MM-DD` (required).
- * @param {string} [opts.time]      `HH:mm`; if absent, defaults to noon and the
- *                                  result is flagged approximate.
+ * @param {string} [opts.time]      `HH:mm`; if absent, defaults to a representative
+ *                                  evening (22:00 local) so an unknown-time sky is
+ *                                  a real night sky rather than empty daylight, and
+ *                                  the result is flagged approximate.
  * @param {string} [opts.zone]      IANA zone (e.g. `Europe/London`) for city mode.
  * @param {number} [opts.offset]    UTC offset in hours for manual mode (used when
  *                                  no `zone` is given).
@@ -43,7 +45,10 @@ export function formatOffset(offsetHours) {
 export function toUTCInstant({ date, time, zone, offset = 0 }) {
   const [year, month, day] = date.split('-').map(Number);
   const approximate = !time;
-  const [hour, minute] = (time || '12:00').split(':').map(Number);
+  // No birth time → a representative night (10pm local). The sky still rotates
+  // 15°/hour with the unknown true time, but this lands on a star-filled night
+  // sky, which is the whole point of the keepsake, instead of an empty noon.
+  const [hour, minute] = (time || '22:00').split(':').map(Number);
 
   const z = zone || formatOffset(offset);
   const dt = DateTime.fromObject({ year, month, day, hour, minute }, { zone: z });

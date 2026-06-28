@@ -1,7 +1,5 @@
-<!-- Badges are finalised in the release/deploy phase. Replace OWNER/REPO. -->
-
-[![CI](https://github.com/OWNER/stardust/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/stardust/actions/workflows/ci.yml)
-[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/OWNER/stardust)
+[![CI](https://github.com/classthandstrategies-ai/stardust/actions/workflows/ci.yml/badge.svg)](https://github.com/classthandstrategies-ai/stardust/actions/workflows/ci.yml)
+[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/classthandstrategies-ai/stardust)
 [![License: MIT](https://img.shields.io/badge/License-MIT-8a7bff.svg)](LICENSE)
 
 # ✦ Stardust
@@ -31,8 +29,7 @@ dashboard.
 
 ## 🌐 Live demo
 
-> **Live demo:** _add your deployment URL here once deployed_
-> (e.g. `https://stardust.vercel.app`)
+**→ [stardust-two.vercel.app](https://stardust-two.vercel.app)**
 
 ---
 
@@ -48,6 +45,8 @@ dashboard.
   thin and quiet.
 - **Accurate Moon phase & planets** — the Moon at its real illuminated phase and
   position; visible planets correctly placed and labelled with a one-line fact.
+- **Named bright stars** — hover or tap the brightest stars (Sirius, Vega,
+  Arcturus…) to name them, with a short note on their colour and brightness.
 - **Ambient drift** — a gentle, continuous camera glide you can just watch, plus
   orbit controls to explore manually.
 - **City search or manual lat/long** — free Open-Meteo geocoding, or type
@@ -78,7 +77,7 @@ dashboard.
 
 ```bash
 # 1. Clone
-git clone https://github.com/OWNER/stardust.git
+git clone https://github.com/classthandstrategies-ai/stardust.git
 cd stardust
 
 # 2. Install dependencies
@@ -120,13 +119,15 @@ If you don’t create a `.env`, sensible defaults are used.
 ## 🧭 Usage
 
 1. On load, enter a **birth date**.
-2. Optionally add a **birth time**. If you leave it blank it defaults to noon,
-   and the app notes the sky is approximate without an exact time.
+2. Optionally add a **birth time**. If you leave it blank the app shows a
+   representative evening sky (10pm local) and notes that the orientation is
+   approximate without an exact time.
 3. Choose a **location**: search for a city, or switch to manual mode and enter
    latitude/longitude (and a UTC offset).
 4. Press **“Reveal the sky.”** The 3D field renders and begins to drift.
 5. **Drag** to look around; let go and the ambient drift resumes.
-6. **Hover/click** the Moon or a planet for its name and a one-line fact.
+6. **Hover/click** the Moon, a planet, or a bright named star for its name and a
+   one-line fact.
 7. Read the **info panel** (corner) for the exact date/time/location and a note
    about what’s notable in that sky.
 8. Click **“Save this sky”** to download a shareable image.

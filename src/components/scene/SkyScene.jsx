@@ -5,6 +5,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
 import StarField from './StarField.jsx';
+import StarLabels from './StarLabels.jsx';
 import ConstellationLines from './ConstellationLines.jsx';
 import HorizonHaze from './HorizonHaze.jsx';
 import Moon from './Moon.jsx';
@@ -66,6 +67,7 @@ export default function SkyScene({ sky, reducedMotion, onReady }) {
       <HorizonHaze />
       <ConstellationLines lines={sky.lines} />
       <StarField stars={sky.stars} reducedMotion={reducedMotion} />
+      <StarLabels stars={sky.stars} onFocus={handleFocus} />
       <Moon moon={sky.moon} sun={sky.sun} onFocus={handleFocus} />
       <Planets planets={sky.planets} onFocus={handleFocus} />
 

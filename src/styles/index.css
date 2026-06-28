@@ -1,0 +1,181 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens — "Particle cosmos on a void" system (see DESIGN.md, tokens.json).
+ * Exposed to Tailwind v4 via @theme so utilities like `text-bone`,
+ * `bg-void`, `text-plum-voltage`, `rounded-3xl` resolve to these values.
+ */
+@theme {
+  /* Colours */
+  --color-void: #000000;
+  --color-bone: #ffffff;
+  --color-ash: #bdbdbd;
+  --color-smoke: #9a9a9a;
+  --color-plum-voltage: #8052ff;
+  --color-amber-spark: #ffb829;
+  --color-lichen: #15846e;
+
+  /* Typeface — Inter substitutes the design system's 'Acronym'. */
+  --font-acronym:
+    'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+
+  /* Type scale */
+  --text-caption: 12px;
+  --text-body-sm: 14px;
+  --text-subheading: 18px;
+  --text-heading-sm: 24px;
+  --text-heading: 36px;
+  --text-heading-lg: 48px;
+  --text-display: 78px;
+  --text-hero: 113px;
+
+  /* Spacing scale (base unit 6px) */
+  --spacing-6: 6px;
+  --spacing-12: 12px;
+  --spacing-18: 18px;
+  --spacing-24: 24px;
+  --spacing-30: 30px;
+  --spacing-36: 36px;
+  --spacing-60: 60px;
+  --spacing-96: 96px;
+  --spacing-120: 120px;
+
+  /* Radius — the system has exactly one interactive radius */
+  --radius-3xl: 24px;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-void);
+    color: var(--color-bone);
+    font-family: var(--font-acronym);
+    font-weight: 400;
+    letter-spacing: 0.025em; /* opens body type on black for legibility */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden; /* the sky owns the viewport */
+  }
+
+  /* Quiet, on-brand text selection. */
+  ::selection {
+    background: color-mix(in srgb, var(--color-plum-voltage) 35%, transparent);
+    color: var(--color-bone);
+  }
+}
+
+/* ---------- Reusable chrome (flat, hairline, pill — no shadows) ---------- */
+@layer components {
+  /* Translucent panel floating on the void: hairline border, no fill heavier
+     than a whisper, 24px radius. */
+  .panel {
+    background: color-mix(in srgb, var(--color-bone) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-bone) 12%, transparent);
+    border-radius: var(--radius-3xl);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Uppercase observatory-plaque kicker. */
+  .eyebrow {
+    font-size: var(--text-caption);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-bone);
+  }
+
+  /* The single filled action colour in the whole system. */
+  .btn-primary {
+    background: var(--color-plum-voltage);
+    color: var(--color-bone);
+    font-weight: 600;
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-3xl);
+    padding: 14px 22px;
+    border: none;
+    cursor: pointer;
+    transition:
+      transform 200ms ease,
+      opacity 200ms ease;
+  }
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+  .btn-primary:active {
+    transform: translateY(1px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Ghost pill: hairline outline, no fill — secondary actions. */
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ash);
+    font-weight: 600;
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-3xl);
+    padding: 12px 18px;
+    border: 1px solid color-mix(in srgb, var(--color-bone) 18%, transparent);
+    cursor: pointer;
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+  .btn-ghost:hover {
+    color: var(--color-bone);
+    border-color: color-mix(in srgb, var(--color-bone) 32%, transparent);
+  }
+
+  /* Text input on the void: underline-only, violet on focus. */
+  .field {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-bone) 18%, transparent);
+    color: var(--color-bone);
+    font-family: var(--font-acronym);
+    font-size: var(--text-subheading);
+    padding: 8px 2px;
+    width: 100%;
+    outline: none;
+    transition: border-color 200ms ease;
+  }
+  .field::placeholder {
+    color: var(--color-smoke);
+  }
+  .field:focus {
+    border-color: var(--color-plum-voltage);
+  }
+  /* Keep native date/time pickers legible on black. */
+  .field::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+    opacity: 0.6;
+    cursor: pointer;
+  }
+}
+
+/* Respect users who don't want motion — the ambient drift listens to this too. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
